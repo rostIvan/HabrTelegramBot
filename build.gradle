@@ -22,7 +22,7 @@ bootJar {
 }
 
 buildscript {
-    ext.kotlin_version = '1.2.31'
+    ext.kotlin_version = '1.2.50'
     ext.spring_boot_version = '2.0.2.RELEASE'
 
     repositories {
@@ -40,12 +40,22 @@ repositories {
     jcenter()
 }
 
+ext {
+    jackson_version = "2.9.4.1"
+    jsoup_version = "1.11.3"
+    junit_version = "4.12"
+    bot_api_version = "3.6.0"
+}
+
 dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4.1")
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile("junit:junit:4.12")
-}
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("com.github.pengrad:java-telegram-bot-api:$bot_api_version")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
+    compile("org.jsoup:jsoup:$jsoup_version")
 
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile("junit:junit:$junit_version")
+}
 
