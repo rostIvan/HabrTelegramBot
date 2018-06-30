@@ -41,10 +41,17 @@ repositories {
 }
 
 ext {
+    bot_api_version = "3.6.0"
     jackson_version = "2.9.4.1"
     jsoup_version = "1.11.3"
+    rx_version = "2.1.16"
+    retrofit_version = "2.4.0"
+    rx_adapter_version = "1.0.0"
+    gson_adapter_version = "2.1.0"
+    mockito_version = "2.19.0"
+
     junit_version = "4.12"
-    bot_api_version = "3.6.0"
+    asserj_version = "3.10.0"
 }
 
 dependencies {
@@ -53,9 +60,15 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("com.github.pengrad:java-telegram-bot-api:$bot_api_version")
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
+    compile("com.squareup.retrofit2:retrofit:$retrofit_version")
+    compile("com.squareup.retrofit2:converter-gson:$gson_adapter_version")
+    compile("io.reactivex.rxjava2:rxjava:$rx_version")
+    compile("com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$rx_adapter_version")
     compile("org.jsoup:jsoup:$jsoup_version")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile("org.assertj:assertj-core:$asserj_version")
+    testCompile("org.mockito:mockito-core:$mockito_version")
     testCompile("junit:junit:$junit_version")
 }
 
