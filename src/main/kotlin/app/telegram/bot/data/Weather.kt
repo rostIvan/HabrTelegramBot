@@ -1,10 +1,12 @@
 package app.telegram.bot.data
 
-import com.google.gson.annotations.Expose
+data class Weather(val location: String,
+                   val link: String,
+                   val date: String,
+                   val day: String = "",
+                   var condition: String,
+                   var temperatureMin: Int,
+                   var temperatureMax: Int) {
 
-data class Weather(@Expose val location: String,
-                   @Expose val link: String,
-                   @Expose val date: String,
-                   @Expose var condition: String,
-                   @Expose var temperatureMin: Int,
-                   @Expose var temperatureMax: Int)
+    enum class Type { CURRENT, TODAY, TOMORROW, FORECAST }
+}

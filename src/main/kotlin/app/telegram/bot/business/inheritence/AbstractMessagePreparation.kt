@@ -2,7 +2,7 @@ package app.telegram.bot.business.inheritence
 
 import java.lang.reflect.ParameterizedType
 
-abstract class AbstractMessagePreparator<T> {
+abstract class AbstractMessagePreparation<T> {
     abstract fun toMessage(t: T) : String
     abstract fun toMessage(list: List<T>) : String
 

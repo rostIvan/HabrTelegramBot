@@ -1,12 +1,12 @@
 package app.telegram.bot.business.inheritence
 
 interface BotInteractor {
-    fun sendCurrentWeather()
-    fun sendTodayWeather()
-    fun sendTomorrowWeather()
-    fun sendWeekWeather()
+    fun sendCurrentWeather(chatId: Long)
+    fun sendTodayWeather(chatId: Long)
+    fun sendTomorrowWeather(chatId: Long)
+    fun sendWeekWeather(chatId: Long)
 
-    fun sendRandomPost()
-    fun sendRandomPosts(count: Int = 4)
-    fun sendPostsByKeywords(vararg keywords: String, count: Int = 4)
+    fun sendRandomPost(chatId: Long)
+    fun sendRandomPosts(chatId: Long, count: Int = 4)
+    fun sendPostsByKeywords(chatId: Long, vararg keywords: String, count: Int = 4)
 }
