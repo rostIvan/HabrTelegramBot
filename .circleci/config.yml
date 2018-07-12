@@ -28,13 +28,27 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      #store test artifacts
-      - store_test_results:
-          path: build/reports/tests
+      # run tests and jacoco coverage report
+      - run: ./gradlew clean build jacocoTestReport
 
-      #store jar artifact
+      # run pitest report
+      - run: ./gradlew pitest
+
+      # copy artifacts to dir
+      - run:
+          name: Copy artifacts
+          command: |
+            mkdir /tmp/artifacts
+            mkdir /tmp/artifacts/jar
+            mkdir /tmp/artifacts/test-reports
+            cp -r build/libs/* /tmp/artifacts/jar
+            cp -r build/reports/* /tmp/artifacts/test-reports
+
+      # store artifacts
       - store_artifacts:
-          path: build/libs/telegram-bot-spring-0.1.0.jar
+          path: /tmp/artifacts
 
-      # run tests!
-      - run: ./gradlew test
+      - run:
+          name: Upload codecov
+          command: bash <(curl -s https://codecov.io/bash)
+          when: on_success
