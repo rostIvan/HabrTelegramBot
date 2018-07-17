@@ -1,19 +1,16 @@
 package app.telegram.bot.business.implementation
 
 import app.telegram.bot.business.inheritence.ChatManager
-import app.telegram.bot.data.Weather
+import com.pengrad.telegrambot.TelegramBot
+import com.pengrad.telegrambot.request.SendMessage
+import org.springframework.beans.factory.annotation.Autowired
 
-class ChatManagerImpl : ChatManager {
+class ChatManagerImpl(@Autowired private val telegramBot: TelegramBot) : ChatManager {
+
     override fun sendMessage(chatId: Long, text: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun sendWeather(chatId: Long, weather: Weather, type: Weather.Type) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun sendWeatherForecast(chatId: Long, forecast: List<Weather>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val sendMessage = SendMessage(chatId, text)
+                .disableWebPagePreview(true)
+        telegramBot.execute(sendMessage)
     }
 
 }

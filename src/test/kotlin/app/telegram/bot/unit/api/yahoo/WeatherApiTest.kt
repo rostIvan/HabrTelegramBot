@@ -1,8 +1,11 @@
-package app.telegram.bot
+package app.telegram.bot.unit.api.yahoo
 
+import app.telegram.bot.Config
+import app.telegram.bot.unit.business.implementation.WeatherProviderTest
 import app.telegram.bot.api.yahoo.WeatherApi
 import app.telegram.bot.api.yahoo.WeatherApi.Companion.defaultLocation
 import app.telegram.bot.api.yahoo.WeatherJsonWrapper
+import app.telegram.bot.business.inheritence.WeatherProvider
 import com.google.gson.Gson
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
@@ -67,7 +70,7 @@ class WeatherApiTest {
         val call = mockWeatherApiCall()
         val jsonWrapper = call.blockingGet()
         val channel = jsonWrapper.query.results.channel
-        assertThat(channel.link).isEqualTo("https://weather.yahoo.com/country/state/city-2347539/")
+        assertThat(channel.link).isEqualTo("http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2347539/")
 
         assertThat(channel.location.country).isEqualTo("Ukraine")
         assertThat(channel.location.region).isEqualTo("UA")
@@ -98,14 +101,15 @@ class WeatherApiTest {
 
     companion object {
         fun mockWeatherApiCall() : Single<WeatherJsonWrapper> {
-            val json = mockJsonResponse()
-            val jsonWrapper = Gson().fromJson(json, WeatherJsonWrapper::class.java)
+            val jsonWrapper = mockWeatherApiModel()
             return Single.just(jsonWrapper)
         }
 
-        fun mockJsonResponse() = File(WeatherProviderTest::class.java.getResource("/static/weather-example.json").path)
-                .inputStream()
-                .readBytes()
-                .toString(Charsets.UTF_8)
+        fun mockWeatherApiModel(): WeatherJsonWrapper {
+            val json = mockJsonResponse()
+            return Gson().fromJson(json, WeatherJsonWrapper::class.java)
+        }
+
+        fun mockJsonResponse() = WeatherApiTest::class.java.getResource("/weather-example.json").readText()
     }
 }

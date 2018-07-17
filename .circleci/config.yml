@@ -32,7 +32,7 @@ jobs:
       - run: ./gradlew clean build jacocoTestReport
 
       # run pitest report
-#      - run: ./gradlew pitest
+      - run: ./gradlew pitest
 
       # copy artifacts to dir
       - run:
@@ -51,6 +51,7 @@ jobs:
       - store_test_results:
           path: build/test-results/test
 
+      # upload coverage on codecov
       - run:
           name: Upload codecov
           command: bash <(curl -s https://codecov.io/bash)

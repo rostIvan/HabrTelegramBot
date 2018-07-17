@@ -72,6 +72,7 @@ dependencies {
     compile("org.jsoup:jsoup:$jsoup_version")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile("org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version")
     testCompile("org.assertj:assertj-core:$asserj_version")
     testCompile("org.mockito:mockito-core:$mockito_version")
     testCompile("junit:junit:$junit_version")
@@ -86,7 +87,8 @@ jacocoTestReport {
 
 pitest {
     targetClasses = ["app.telegram.bot.*"]
-    pitestVersion = '1.3.0'
+    pitestVersion = '1.4.0'
+    avoidCallsTo = ['kotlin.jvm.internal']
     threads = 4
     outputFormats = ['XML', 'HTML']
     timestampedReports = false

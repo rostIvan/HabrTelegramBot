@@ -2,6 +2,7 @@ package app.telegram.bot.util
 
 import app.telegram.bot.api.yahoo.WeatherJsonWrapper
 import app.telegram.bot.data.Weather
+import kotlin.math.roundToInt
 
 object WeatherUtil {
     fun toCurrentWeather(weatherJsonWrapper: WeatherJsonWrapper) : Weather = toWeatherObj(weatherJsonWrapper, Weather.Type.CURRENT)
@@ -32,20 +33,34 @@ object WeatherUtil {
     private fun current(channel: WeatherJsonWrapper.Channel, location: WeatherJsonWrapper.Location): Weather {
         val currentCondition = channel.item.currentCondition
         return Weather(
-                location = "${location.city.trim()}, ${location.country.trim()}(${location.region.trim()})",
-                link = channel.link,
+                location = formatLocation(location),
+                link = channel.link.formatLink(),
                 date = currentCondition.date,
                 condition = currentCondition.status,
-                temperatureMin = currentCondition.temperature, temperatureMax = currentCondition.temperature)
+                temperatureMin = fahrenheitToCelsius(currentCondition.temperature),
+                temperatureMax = fahrenheitToCelsius(currentCondition.temperature))
     }
 
     private fun forecast(channel: WeatherJsonWrapper.Channel, location: WeatherJsonWrapper.Location, weekPosition: Int): Weather {
         val forecastDay = channel.item.forecast[weekPosition]
         return Weather(
-                location = "${location.city.trim()}, ${location.country.trim()}(${location.region.trim()})",
-                link = channel.link,
+                location = formatLocation(location),
+                link = channel.link.formatLink(),
                 condition = forecastDay.status,
-                date = forecastDay.date, day = forecastDay.day,
-                temperatureMin = forecastDay.temperatureMin, temperatureMax = forecastDay.temperatureMax)
+                date = forecastDay.date,
+                day = forecastDay.day,
+                temperatureMin = fahrenheitToCelsius(forecastDay.temperatureMin),
+                temperatureMax = fahrenheitToCelsius(forecastDay.temperatureMax))
     }
+
+    private fun formatLocation(location: WeatherJsonWrapper.Location) =
+            "${location.city.trim()}, ${location.country.trim()}(${location.region.trim()})"
+
+// link example: http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2347539
+    private fun String.formatLink(): String = this
+            .replaceBeforeLast("/*", "")
+            .removePrefix("/*")
+            .removeSuffix("/")
+
+    private fun fahrenheitToCelsius(fahrenheit: Int) = ((5.0 / 9.0) * (fahrenheit - 32.0)).roundToInt()
 }

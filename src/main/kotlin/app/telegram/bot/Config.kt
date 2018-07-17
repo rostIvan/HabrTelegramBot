@@ -26,8 +26,7 @@ class Config {
     @Bean fun weatherProvider(weatherApi: WeatherApi) = WeatherProviderImpl(weatherApi)
     @Bean fun postProvider(postApi: PostApi) = PostProviderImpl(postApi)
 
-    @Bean fun messagePreparation() = MessagePreparation()
-    @Bean fun chatManager() = ChatManagerImpl()
+    @Bean fun chatManager(bot: TelegramBot) = ChatManagerImpl(bot)
 
     @Bean fun botInteractor(chatManager: ChatManager,
                             weatherProvider: WeatherProvider,

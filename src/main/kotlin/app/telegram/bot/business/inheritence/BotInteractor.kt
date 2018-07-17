@@ -1,6 +1,7 @@
 package app.telegram.bot.business.inheritence
 
 interface BotInteractor {
+    fun sendHello(chatId: Long)
     fun sendCurrentWeather(chatId: Long)
     fun sendTodayWeather(chatId: Long)
     fun sendTomorrowWeather(chatId: Long)
