@@ -29,12 +29,17 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      # code climate setup
-      - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter && chmod +x ./cc-test-reporter
-      - run : ./cc-test-reporter before-build
+      # code climate download
+      - run:
+          name: Code climate test reporter tools download
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
 
       # run tests and jacoco coverage report
-      - run: ./gradlew clean build jacocoTestReport
+      - run:
+          name: Gradle build
+          command: ./gradlew clean build jacocoTestReport
 
       # run pitest report
       - run: ./gradlew pitest
@@ -56,13 +61,22 @@ jobs:
       - store_test_results:
           path: build/test-results/test
 
+      # set up xml path for code climate
+      - run:
+          name: Set jacoco.xml path for code climate
+          command: JACOCO_SOURCE_PATH=src/main/kotlin ./cc-test-reporter format-coverage ./build/reports/jacoco/test/jacocoTestReport.xml --input-type jacoco
+
       # upload coverage on code climate
       - run:
-        name: Upload code climate
-          command: ./cc-test-reporter after-build --exit-code $EXIT_CODE
+          name: Upload code climate report
+          command: ./cc-test-reporter upload-coverage -r $CC_TEST_REPORTER_ID
+          when: on_success
 
       # upload coverage on codecov
       - run:
           name: Upload codecov
           command: bash <(curl -s https://codecov.io/bash)
           when: on_success
+
+
+
