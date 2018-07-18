@@ -9,6 +9,7 @@ jobs:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
+      CC_TEST_REPORTER_ID: d2be86e30e85eac5caccbc2c989f05fb6e88ffb862554593d86b8ee18f8803b1
 
     steps:
       - checkout
@@ -27,6 +28,10 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      # code climate setup
+      - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter && chmod +x ./cc-test-reporter
+      - run : ./cc-test-reporter before-build
 
       # run tests and jacoco coverage report
       - run: ./gradlew clean build jacocoTestReport
@@ -50,6 +55,11 @@ jobs:
 
       - store_test_results:
           path: build/test-results/test
+
+      # upload coverage on code climate
+      - run:
+        name: Upload code climate
+          command: ./cc-test-reporter after-build --exit-code $EXIT_CODE
 
       # upload coverage on codecov
       - run:

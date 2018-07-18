@@ -7,6 +7,7 @@ import app.telegram.bot.unit.api.yahoo.WeatherApiTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -32,13 +33,23 @@ class SendWeatherIntegrationTest {
         `when`(weatherApi.get(anyString())).thenReturn(WeatherApiTest.mockWeatherApiCall())
     }
 
-    @Test fun test1() {
+    @Test fun ifUserNotCommandSend_botShouldSendNothing() {
+        webhookPostReceiveMessage("1234")
+        verify(chatManager, never()).sendMessage(anyLong(), anyString())
+        webhookPostReceiveMessage("Common")
+        verify(chatManager, never()).sendMessage(anyLong(), anyString())
+        webhookPostReceiveMessage("Wrong message")
+        verify(chatManager, never()).sendMessage(anyLong(), anyString())
+    }
+
+
+    @Test fun onStartCommand_shouldCalledSendHelloMessage() {
         webhookPostReceiveMessage("/start")
         val expect = "Hello, let's start!"
         verify(chatManager, times(1)).sendMessage(chatId, expect)
     }
 
-    @Test fun test2() {
+    @Test fun onCurrentWeatherCommand_shouldSendCurrentWeather() {
         webhookPostReceiveMessage("/weather_current")
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
@@ -50,7 +61,7 @@ class SendWeatherIntegrationTest {
         verify(chatManager, times(1)).sendMessage(chatId, expect)
     }
 
-    @Test fun test3() {
+    @Test fun onTodayWeatherCommand_shouldSendTodaytWeather() {
         webhookPostReceiveMessage("/weather_today")
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
@@ -64,7 +75,7 @@ class SendWeatherIntegrationTest {
         verify(chatManager, times(1)).sendMessage(chatId, expect)
     }
 
-    @Test fun test4() {
+    @Test fun onTomorrowWeatherCommand_shouldSendTomorrowWeather() {
         webhookPostReceiveMessage("/weather_tomorrow")
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
@@ -78,7 +89,7 @@ class SendWeatherIntegrationTest {
         verify(chatManager, times(1)).sendMessage(chatId, expect)
     }
 
-    @Test fun test5() {
+    @Test fun onWeekWeatherCommand_shouldSendWeekWeather() {
         webhookPostReceiveMessage("/weather_week")
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
