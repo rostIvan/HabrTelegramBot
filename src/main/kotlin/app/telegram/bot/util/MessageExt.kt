@@ -11,7 +11,7 @@ fun Weather.toMessage(): String = this.let {
         formatForecastDayWeather(it)
 }
 
-fun Post.toMessage(): String = ""
+fun Post.toMessage(): String = with(this) { "$title -> <a href=\"$link\">link</a>" + if (description.isBlank()) "" else "\n$description" }
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> List<T>.toMessage(): String = when (T::class) {
@@ -42,31 +42,31 @@ private fun formatForecastDayWeather(weather: Weather): String = with(weather) {
     """.trimIndent()
 }
 
-fun formatWeekWeatherForecast(list: List<Weather>) : String {
+fun formatWeekWeatherForecast(list: List<Weather>): String {
     val location = list[0].location
     val link = list[0].link
-    val forecast = list.stream()
-            .map {
-                with(it) {
-                    """
-                        Date: $date
-                        Day: $day
-                        Condition: $condition
-                        Temperature(min): $temperatureMin C°
-                        Temperature(max): $temperatureMax C°
-                    """.trimIndent()
-                }
-            }
-            .collect(Collectors.joining("\n${repeat(50, "-")}\n"))
-    return  "Location: $location\n" +
+    val forecast = list.stream().map {
+        with(it) {
+            """
+                Date: $date
+                Day: $day
+                Condition: $condition
+                Temperature(min): $temperatureMin C°
+                Temperature(max): $temperatureMax C°
+            """.trimIndent()
+        }
+    }.collect(lineJoin())
+    return "Location: $location\n" +
             "Link: $link\n" +
             "${repeat(50, "=")}\n" +
             forecast
 }
 
-fun formatPosts(list: List<Post>) = ""
+fun formatPosts(list: List<Post>): String = list.stream().map { it.toMessage() }.collect(lineJoin())
 
-fun repeat(count: Int, string: String) : String {
+private fun lineJoin() = Collectors.joining("\n${repeat(50, "-")}\n")
+
+private fun repeat(count: Int, string: String): String {
     val sb = StringBuilder(count)
     (0..count).forEach { sb.append(string) }
     return sb.toString()

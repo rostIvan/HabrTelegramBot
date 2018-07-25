@@ -2,7 +2,6 @@ package app.telegram.bot.unit.business.implementation
 
 import app.telegram.bot.business.implementation.ChatManagerImpl
 import app.telegram.bot.business.inheritence.ChatManager
-import app.telegram.bot.data.Weather
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.request.SendMessage
 import org.junit.Before

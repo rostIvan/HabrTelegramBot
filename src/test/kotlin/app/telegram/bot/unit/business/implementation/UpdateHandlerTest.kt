@@ -57,14 +57,14 @@ class UpdateHandlerTest {
     }
 
     private fun mockUpdate(text: String) : Update {
-        val update = mock(Update::class.java)
-        val message = mock(Message::class.java)
+        val update = mock<Update>()
+        val message = mock<Message>()
         `when`(message.text()).thenReturn(text)
-        `when`(message.chat()).thenReturn(mock(Chat::class.java))
+        `when`(message.chat()).thenReturn(mock())
         `when`(message.chat().id()).thenReturn(chatId)
         `when`(update.message()).thenReturn(message)
         return update
     }
 
-    @After fun after() {  }
+    inline fun <reified T : Any> mock() = mock(T::class.java)
 }

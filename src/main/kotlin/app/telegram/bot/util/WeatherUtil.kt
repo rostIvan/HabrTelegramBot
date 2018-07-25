@@ -5,18 +5,14 @@ import app.telegram.bot.data.Weather
 import kotlin.math.roundToInt
 
 object WeatherUtil {
+    const val DAY_OF_WEEK = 7
+
     fun toCurrentWeather(weatherJsonWrapper: WeatherJsonWrapper) : Weather = toWeatherObj(weatherJsonWrapper, Weather.Type.CURRENT)
     fun toTodayWeather(weatherJsonWrapper: WeatherJsonWrapper) : Weather = toWeatherObj(weatherJsonWrapper, Weather.Type.TODAY)
     fun toTomorrowWeather(weatherJsonWrapper: WeatherJsonWrapper) : Weather = toWeatherObj(weatherJsonWrapper, Weather.Type.TOMORROW)
 
     fun toWeekWeather(weatherJsonWrapper: WeatherJsonWrapper) : List<Weather> {
-        val forecast = weatherJsonWrapper.query.results.channel.item.forecast
-        val weekWeatherForecast = mutableListOf<Weather>()
-        for (index in forecast.indices) {
-            if (index == 7) break
-            weekWeatherForecast.add(toWeatherObj(weatherJsonWrapper, Weather.Type.FORECAST, index))
-        }
-        return weekWeatherForecast
+        return IntRange(0, DAY_OF_WEEK - 1).map { index -> toWeatherObj(weatherJsonWrapper, Weather.Type.FORECAST, index) }.toList()
     }
 
     private fun toWeatherObj(weatherJsonWrapper: WeatherJsonWrapper, weatherType: Weather.Type, weekPosition : Int = -1) : Weather {
@@ -33,7 +29,7 @@ object WeatherUtil {
     private fun current(channel: WeatherJsonWrapper.Channel, location: WeatherJsonWrapper.Location): Weather {
         val currentCondition = channel.item.currentCondition
         return Weather(
-                location = formatLocation(location),
+                location = location.formatLocation(),
                 link = channel.link.formatLink(),
                 date = currentCondition.date,
                 condition = currentCondition.status,
@@ -44,7 +40,7 @@ object WeatherUtil {
     private fun forecast(channel: WeatherJsonWrapper.Channel, location: WeatherJsonWrapper.Location, weekPosition: Int): Weather {
         val forecastDay = channel.item.forecast[weekPosition]
         return Weather(
-                location = formatLocation(location),
+                location = location.formatLocation(),
                 link = channel.link.formatLink(),
                 condition = forecastDay.status,
                 date = forecastDay.date,
@@ -53,8 +49,8 @@ object WeatherUtil {
                 temperatureMax = fahrenheitToCelsius(forecastDay.temperatureMax))
     }
 
-    private fun formatLocation(location: WeatherJsonWrapper.Location) =
-            "${location.city.trim()}, ${location.country.trim()}(${location.region.trim()})"
+    private fun WeatherJsonWrapper.Location.formatLocation() =
+            "${city.trim()}, ${country.trim()}(${region.trim()})"
 
 // link example: http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2347539
     private fun String.formatLink(): String = this

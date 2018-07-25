@@ -2,6 +2,7 @@ package app.telegram.bot.business.implementation
 
 import app.telegram.bot.business.inheritence.ChatManager
 import com.pengrad.telegrambot.TelegramBot
+import com.pengrad.telegrambot.model.request.ParseMode
 import com.pengrad.telegrambot.request.SendMessage
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -9,6 +10,7 @@ class ChatManagerImpl(@Autowired private val telegramBot: TelegramBot) : ChatMan
 
     override fun sendMessage(chatId: Long, text: String) {
         val sendMessage = SendMessage(chatId, text)
+                .parseMode(ParseMode.HTML)
                 .disableWebPagePreview(true)
         telegramBot.execute(sendMessage)
     }
