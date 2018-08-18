@@ -3,10 +3,14 @@ package app.telegram.bot.unit.util
 import app.telegram.bot.util.random
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 class AppExtTest {
 
-    @Test fun random_inRange_shouldGenerateValidNumber1() {
+    @Test
+    fun random_inRange_shouldGenerateValidNumber1() {
         var random = (0..10).random()
         assertThat(random).isGreaterThanOrEqualTo(0).isLessThanOrEqualTo(10)
 
@@ -37,4 +41,5 @@ class AppExtTest {
         random = (-1..0).random()
         assertThat(random).isGreaterThanOrEqualTo(-1).isLessThanOrEqualTo(0)
     }
+
 }

@@ -8,6 +8,7 @@ import app.telegram.bot.business.inheritence.PostProvider
 import app.telegram.bot.business.inheritence.WeatherProvider
 import app.telegram.bot.data.Weather
 import app.telegram.bot.util.WeatherUtil
+import io.reactivex.Observable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -33,6 +34,31 @@ class BotInteractorTest {
     @Test fun sendHello_shouldCallChatManagerMethod() {
         botInteractor.sendHello(chatId)
         verify(chatManager).sendMessage(chatId, "Hello, let's start!")
+    }
+
+
+    @Test fun sendHelp_shouldCallChatManagerMethod() {
+        botInteractor.sendHelp(chatId)
+        verify(chatManager).sendMessage(chatId, """
+        Commands:
+
+        /start -> Send hello message
+        /help -> Send this message
+        /weather_current -> Send current weather in the selected region
+        /weather_today -> Send today weather in the selected region
+        /weather_tomorrow -> Send tomorrow weather in the selected region
+        /weather_week -> Send week weather in the selected region
+        /post_random -> Send random post from the top on post api site
+        /posts_random -> Send random posts from the top on post api site
+        /post_relevant -> Send relevant post from site api
+        /posts_relevant -> Send relevant posts from site api
+
+        Phrases:
+
+        Send me ["query"] post -> Send me "Android" post
+        Send me [number] posts -> Send me 10 posts
+        Send me [number] ["query"] posts -> Send me 3 "Android" posts
+        """.trimIndent())
     }
 
     @Test fun sendCurrentWeatherIfSuccess_shouldCallSendWeatherMethod() {
@@ -83,7 +109,6 @@ class BotInteractorTest {
         verify(chatManager).sendMessage(chatId, "Sorry, but occurred some error: $errorMessage")
     }
 
-
     @Test fun sendTomorrowWeatherIfSuccess_shouldCallSendWeatherMethod() {
         val tomorrowWeather = mockWeather(Weather.Type.TOMORROW)
         val mockSuccess = mockWeatherApiSuccess(tomorrowWeather)
@@ -109,7 +134,6 @@ class BotInteractorTest {
         verify(chatManager).sendMessage(chatId, "Sorry, but occurred some error: $errorMessage")
     }
 
-
     @Test fun sendWeekWeatherIfSuccess_shouldCallSendWeatherMethod() {
         val weekWeather = mockWeekWeather()
         val mockSuccess = mockWeekWeatherApiSuccess(weekWeather)
@@ -118,43 +142,43 @@ class BotInteractorTest {
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
             Link: https://weather.yahoo.com/country/state/city-2347539
-            ===================================================
+
             Date: 01 Jul 2018
             Day: Sun
             Condition: Mostly Cloudy
             Temperature(min): 9 C°
             Temperature(max): 17 C°
-            ---------------------------------------------------
+
             Date: 02 Jul 2018
             Day: Mon
             Condition: Mostly Cloudy
             Temperature(min): 9 C°
             Temperature(max): 16 C°
-            ---------------------------------------------------
+
             Date: 03 Jul 2018
             Day: Tue
             Condition: Partly Cloudy
             Temperature(min): 8 C°
             Temperature(max): 18 C°
-            ---------------------------------------------------
+
             Date: 04 Jul 2018
             Day: Wed
             Condition: Partly Cloudy
             Temperature(min): 12 C°
             Temperature(max): 19 C°
-            ---------------------------------------------------
+
             Date: 05 Jul 2018
             Day: Thu
             Condition: Partly Cloudy
             Temperature(min): 14 C°
             Temperature(max): 21 C°
-            ---------------------------------------------------
+
             Date: 06 Jul 2018
             Day: Fri
             Condition: Rain
             Temperature(min): 15 C°
             Temperature(max): 21 C°
-            ---------------------------------------------------
+
             Date: 07 Jul 2018
             Day: Sat
             Condition: Rain

@@ -39,7 +39,7 @@ jobs:
       # run tests and jacoco coverage report
       - run:
           name: Gradle build
-          command: ./gradlew clean build jacocoTestReport
+          command: ./gradlew clean build --info jacocoTestReport
 
       # run pitest report
       - run: ./gradlew pitest

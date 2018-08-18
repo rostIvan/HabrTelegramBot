@@ -6,6 +6,7 @@ import app.telegram.bot.api.habr.PostParseWrapper
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -60,20 +61,20 @@ class HabrApiTest {
         assertThat(containsQuery).isEqualTo(true)
     }
 
-    @Test fun getRandomPosts_shouldReturnTenValidPosts() {
+    @Test fun getRandomPostsWithoutArgs_shouldReturnFiveValidPosts() {
         val posts = postApi.getRandomPosts().blockingGet()
         assertThat(posts).isNotNull
         assertThat(posts).isNotEmpty
-        assertThat(posts).hasSize(10)
+        assertThat(posts).hasSize(5)
         posts.forEach { checkPost(it) }
     }
 
-    @Test fun getByQueryPosts_shouldReturnTenValidPosts() {
+    @Test fun getByQueryPosts_shouldReturnFiveValidPosts() {
         val query = "Hello world"
         val posts = postApi.getPostsByQuery(query).blockingGet()
         assertThat(posts).isNotNull
         assertThat(posts).isNotEmpty
-        assertThat(posts).hasSize(10)
+        assertThat(posts).hasSize(5)
         posts.forEach {
             checkPost(it)
             val containsQuery = containsQuery(it, query)
@@ -82,9 +83,9 @@ class HabrApiTest {
     }
 
     @Test fun getRandomPosts_ifCountTooBig_shouldThrowException() {
-        val expectMessage = "Sorry, but count[20] must be in a range"
+        val expectMessage = "Sorry, but count[50] must be in a range"
         expectExceptionWithMessage(expectMessage) {
-            postApi.getRandomPosts(20).blockingGet()
+            postApi.getRandomPosts(50).blockingGet()
         }
     }
 
@@ -104,9 +105,9 @@ class HabrApiTest {
     }
 
     @Test fun getPostsByQuery_ifCountTooBig_shouldThrowException() {
-        val expectMessage = "Sorry, but count[14] must be in a range"
+        val expectMessage = "Sorry, but count[50] must be in a range"
         expectExceptionWithMessage(expectMessage) {
-            postApi.getRandomPosts(14).blockingGet()
+            postApi.getPostsByQuery("Hello world", 50).blockingGet()
         }
     }
 

@@ -9,6 +9,7 @@ import app.telegram.bot.business.inheritence.WeatherProvider
 import com.google.gson.Gson
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired

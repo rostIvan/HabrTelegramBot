@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired
 
 class ChatManagerImpl(@Autowired private val telegramBot: TelegramBot) : ChatManager {
 
-    override fun sendMessage(chatId: Long, text: String) {
+    override fun sendMessage(chatId: Long, text: String, preview: Boolean) {
         val sendMessage = SendMessage(chatId, text)
                 .parseMode(ParseMode.HTML)
-                .disableWebPagePreview(true)
+                .disableWebPagePreview(!preview)
         telegramBot.execute(sendMessage)
     }
 

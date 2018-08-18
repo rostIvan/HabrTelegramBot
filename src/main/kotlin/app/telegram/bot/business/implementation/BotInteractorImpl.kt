@@ -5,6 +5,8 @@ import app.telegram.bot.business.inheritence.ChatManager
 import app.telegram.bot.business.inheritence.PostProvider
 import app.telegram.bot.business.inheritence.WeatherProvider
 import app.telegram.bot.data.Weather
+import app.telegram.bot.util.getHelpMessage
+import app.telegram.bot.util.getStartMessage
 import app.telegram.bot.util.toMessage
 import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired
 class BotInteractorImpl(@Autowired private val chatManager: ChatManager,
                         @Autowired private val weatherProvider: WeatherProvider,
                         @Autowired private val postProvider: PostProvider) : BotInteractor {
-
     override fun sendHello(chatId: Long) {
-        chatManager.sendMessage(chatId, "Hello, let's start!")
+        chatManager.sendMessage(chatId, getStartMessage())
+    }
+
+    override fun sendHelp(chatId: Long) {
+        chatManager.sendMessage(chatId, getHelpMessage())
     }
 
     override fun sendCurrentWeather(chatId: Long) {
@@ -41,15 +46,19 @@ class BotInteractorImpl(@Autowired private val chatManager: ChatManager,
     }
 
     override fun sendRandomPost(chatId: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val randomPost = postProvider.getRandomPost()
+        randomPost.subscribe(
+            { post -> chatManager.sendMessage(chatId = chatId, text = post.toMessage(), preview = true ) },
+            { error -> handleError(chatId, error) }
+        )
     }
 
     override fun sendRandomPosts(chatId: Long, count: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun sendPostsByKeywords(chatId: Long, vararg keywords: String, count: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val randomPosts = postProvider.getRandomPosts(4)
+        randomPosts.subscribe(
+                { posts -> chatManager.sendMessage(chatId = chatId, text = posts.toMessage(), preview = false ) },
+                { error -> handleError(chatId, error) }
+        )
     }
 
     private fun sendWeatherMessage(chatId: Long, weatherResponse: Single<Weather>) {

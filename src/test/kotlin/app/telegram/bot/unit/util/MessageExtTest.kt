@@ -81,13 +81,13 @@ class MessageExtTest {
 
     private fun validPostWithoutDescription(): String {
         return """
-                Rust, дисциплинирующий язык программирования -> <a href="https://habr.com/company/piter/blog/267203/">link</a>
+                Rust, дисциплинирующий язык программирования >>> <a href="https://habr.com/company/piter/blog/267203/">Link</a>
             """.trimIndent()
     }
 
     private fun validPostWithDescription(): String {
         return """
-                Java and SpringBoot -> <a href="https://habr.com/company/piter/blog/25002/">link</a>
+                Java and SpringBoot >>> <a href="https://habr.com/company/piter/blog/25002/">Link</a>
                 Java is more effective with SpringBoot framework, try it now
             """.trimIndent()
     }
@@ -118,43 +118,43 @@ class MessageExtTest {
         return """
                 Location: Ivano-Frankivsk Oblast, Ukraine(UA)
                 Link: https://weather.yahoo.com/country/state/city-2347539
-                ===================================================
+
                 Date: 01 Jul 2018
                 Day: Sun
                 Condition: Cloudy
                 Temperature(min): 13 C°
                 Temperature(max): 27 C°
-                ---------------------------------------------------
+
                 Date: 02 Jul 2018
                 Day: Mon
                 Condition: Partly Cloudy
                 Temperature(min): 11 C°
                 Temperature(max): 17 C°
-                ---------------------------------------------------
+
                 Date: 03 Jul 2018
                 Day: Tue
                 Condition: Rain
                 Temperature(min): 5 C°
                 Temperature(max): 10 C°
-                ---------------------------------------------------
+
                 Date: 04 Jul 2018
                 Day: Wed
                 Condition: Rain
                 Temperature(min): 24 C°
                 Temperature(max): 30 C°
-                ---------------------------------------------------
+
                 Date: 05 Jul 2018
                 Day: Thu
                 Condition: Mostly Cloudy
                 Temperature(min): 4 C°
                 Temperature(max): 8 C°
-                ---------------------------------------------------
+
                 Date: 06 Jul 2018
                 Day: Fri
                 Condition: Snow
                 Temperature(min): -12 C°
                 Temperature(max): -2 C°
-                ---------------------------------------------------
+
                 Date: 07 Jul 2018
                 Day: Sat
                 Condition: Thunderstorm
@@ -164,11 +164,11 @@ class MessageExtTest {
     }
 
     private fun validPosts(): String = """
-        Hello world(java) -> <a href="https://habr.com/company/piter/blog/10002/">link</a>
-        ---------------------------------------------------
-        Hello world(kotlin) -> <a href="https://habr.com/company/piter/blog/267203/">link</a>
-        ---------------------------------------------------
-        Hello world(scala) -> <a href="https://habr.com/company/piter/blog/2321345/">link</a>
+        Hello world(java) >>> <a href="https://habr.com/company/piter/blog/10002/">Link</a>
+
+        Hello world(kotlin) >>> <a href="https://habr.com/company/piter/blog/267203/">Link</a>
+
+        Hello world(scala) >>> <a href="https://habr.com/company/piter/blog/2321345/">Link</a>
     """.trimIndent()
 
     private fun getCurrentWeatherModel() = Weather(

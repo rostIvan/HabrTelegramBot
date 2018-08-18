@@ -1,5 +1,7 @@
 package app.telegram.bot.api.habr
 
+import app.telegram.bot.util.collectAsList
+import app.telegram.bot.util.intStream
 import app.telegram.bot.util.random
 import io.reactivex.Single
 import org.jsoup.Jsoup
@@ -15,38 +17,33 @@ class HabrApi : PostApi {
         val document = Jsoup.connect(baseUrl).get()
         val item = getRandomItem(document)
         val post = postModel(item)
-        return Single.just(post)
+        return Single.fromCallable { post }
     }
 
     override fun getPostByQuery(query: String): Single<PostParseWrapper> {
         val document = Jsoup.connect("$baseUrl/search/?q=$query").get()
         val item = getRandomItem(document)
         val post = postModel(item)
-        return Single.just(post)
+        return Single.fromCallable { post }
     }
 
     override fun getRandomPosts(count: Int): Single<List<PostParseWrapper>> {
         val document = Jsoup.connect(baseUrl).get()
         val items = getItems(document)
         val posts = getPartOfPosts(items, count)
-        return Single.just(posts)
+        return Single.fromCallable { posts }
     }
 
     override fun getPostsByQuery(query: String, count: Int): Single<List<PostParseWrapper>> {
         val document = Jsoup.connect("$baseUrl/search/?q=$query").get()
         val items = getItems(document)
         val posts = getPartOfPosts(items, count)
-        return Single.just(posts)
+        return Single.fromCallable { posts }
     }
 
     private fun getPartOfPosts(items: Elements, count: Int): List<PostParseWrapper> {
         if (count !in (1..items.size)) throw Exception("Sorry, but count[$count] must be in a range[1, ${items.size}]")
-        val posts = arrayListOf<PostParseWrapper>()
-        items.forEachIndexed { index, element ->
-            if (index > count - 1) return@forEachIndexed
-            posts.add(postModel(element))
-        }
-        return posts
+        return (0 until count).intStream().map { postModel(items[it]) }.collectAsList()
     }
 
     private fun getRandomItem(document: Document): Element {

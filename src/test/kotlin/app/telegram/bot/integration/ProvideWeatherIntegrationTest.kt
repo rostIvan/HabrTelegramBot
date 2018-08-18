@@ -74,43 +74,43 @@ class ProvideWeatherIntegrationTest {
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
             Link: https://weather.yahoo.com/country/state/city-2347539
-            ===================================================
+
             Date: 01 Jul 2018
             Day: Sun
             Condition: Mostly Cloudy
             Temperature(min): 9 C°
             Temperature(max): 17 C°
-            ---------------------------------------------------
+
             Date: 02 Jul 2018
             Day: Mon
             Condition: Mostly Cloudy
             Temperature(min): 9 C°
             Temperature(max): 16 C°
-            ---------------------------------------------------
+
             Date: 03 Jul 2018
             Day: Tue
             Condition: Partly Cloudy
             Temperature(min): 8 C°
             Temperature(max): 18 C°
-            ---------------------------------------------------
+
             Date: 04 Jul 2018
             Day: Wed
             Condition: Partly Cloudy
             Temperature(min): 12 C°
             Temperature(max): 19 C°
-            ---------------------------------------------------
+
             Date: 05 Jul 2018
             Day: Thu
             Condition: Partly Cloudy
             Temperature(min): 14 C°
             Temperature(max): 21 C°
-            ---------------------------------------------------
+
             Date: 06 Jul 2018
             Day: Fri
             Condition: Rain
             Temperature(min): 15 C°
             Temperature(max): 21 C°
-            ---------------------------------------------------
+
             Date: 07 Jul 2018
             Day: Sat
             Condition: Rain

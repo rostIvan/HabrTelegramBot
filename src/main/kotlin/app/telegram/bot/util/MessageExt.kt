@@ -11,7 +11,7 @@ fun Weather.toMessage(): String = this.let {
         formatForecastDayWeather(it)
 }
 
-fun Post.toMessage(): String = with(this) { "$title -> <a href=\"$link\">link</a>" + if (description.isBlank()) "" else "\n$description" }
+fun Post.toMessage(): String = with(this) { "$title >>> <a href=\"$link\">Link</a>" + if (description.isBlank()) "" else "\n$description" }
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> List<T>.toMessage(): String = when (T::class) {
@@ -55,19 +55,12 @@ fun formatWeekWeatherForecast(list: List<Weather>): String {
                 Temperature(max): $temperatureMax C°
             """.trimIndent()
         }
-    }.collect(lineJoin())
+    }.collect(newLineJoin())
     return "Location: $location\n" +
-            "Link: $link\n" +
-            "${repeat(50, "=")}\n" +
+            "Link: $link\n\n" +
             forecast
 }
 
-fun formatPosts(list: List<Post>): String = list.stream().map { it.toMessage() }.collect(lineJoin())
+fun formatPosts(list: List<Post>): String = list.stream().map { it.toMessage() }.collect(newLineJoin())
 
-private fun lineJoin() = Collectors.joining("\n${repeat(50, "-")}\n")
-
-private fun repeat(count: Int, string: String): String {
-    val sb = StringBuilder(count)
-    (0..count).forEach { sb.append(string) }
-    return sb.toString()
-}
+private fun newLineJoin() = Collectors.joining("\n\n")
