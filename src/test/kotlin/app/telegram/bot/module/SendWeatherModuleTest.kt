@@ -1,9 +1,11 @@
 package app.telegram.bot.module
 
 import app.telegram.bot.Config
-import app.telegram.bot.api.yahoo.WeatherApi
+import app.telegram.bot.data.api.yahoo.WeatherApi
 import app.telegram.bot.business.inheritence.ChatManager
-import app.telegram.bot.unit.api.yahoo.WeatherApiTest
+import app.telegram.bot.unit.data.api.yahoo.WeatherApiTest
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.web.reactive.function.BodyInserters
 
 
 @RunWith(SpringRunner::class)
@@ -26,30 +27,34 @@ class SendWeatherModuleTest {
     @Autowired lateinit var webClient: WebTestClient
     @MockBean lateinit var weatherApi: WeatherApi
     @MockBean lateinit var chatManager: ChatManager
+    lateinit var mockWebClient: MockWebClient
+
     val chatId: Long = 1000413156
 
     @Before fun before() {
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         `when`(weatherApi.get(anyString())).thenReturn(WeatherApiTest.mockWeatherApiCall())
+        mockWebClient = MockWebClient(webClient)
     }
 
     @Test fun ifUserNotCommandSend_botShouldSendNothing() {
-        ModuleTestUtil(webClient).webhookPostReceiveMessage("1234")
+        mockWebClient.webhookPostReceiveMessage("1234")
         verify(chatManager, never()).sendMessage(anyLong(), anyString(), anyBoolean())
-        ModuleTestUtil(webClient).webhookPostReceiveMessage("Common")
+        mockWebClient.webhookPostReceiveMessage("Common")
         verify(chatManager, never()).sendMessage(anyLong(), anyString(), anyBoolean())
-        ModuleTestUtil(webClient).webhookPostReceiveMessage("Wrong message")
+        mockWebClient.webhookPostReceiveMessage("Wrong message")
         verify(chatManager, never()).sendMessage(anyLong(), anyString(), anyBoolean())
     }
 
 
     @Test fun onStartCommand_shouldCalledSendHelloMessage() {
-        ModuleTestUtil(webClient).webhookPostReceiveMessage("/start")
-        val expect = "Hello, let's start!"
+        mockWebClient.webhookPostReceiveMessage("/start")
+        val expect = "Hello, jiayu, let's start! Use /help command for get start"
         verify(chatManager, times(1)).sendMessage(chatId, expect)
     }
 
     @Test fun onCurrentWeatherCommand_shouldSendCurrentWeather() {
-        ModuleTestUtil(webClient).webhookPostReceiveMessage("/weather_current")
+        mockWebClient.webhookPostReceiveMessage("/weather_current")
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
             Time: Sun, 01 Jul 2018 01:00 AM EEST
@@ -61,7 +66,7 @@ class SendWeatherModuleTest {
     }
 
     @Test fun onTodayWeatherCommand_shouldSendTodaytWeather() {
-        ModuleTestUtil(webClient).webhookPostReceiveMessage("/weather_today")
+        mockWebClient.webhookPostReceiveMessage("/weather_today")
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
             Date: 01 Jul 2018
@@ -75,7 +80,7 @@ class SendWeatherModuleTest {
     }
 
     @Test fun onTomorrowWeatherCommand_shouldSendTomorrowWeather() {
-        ModuleTestUtil(webClient).webhookPostReceiveMessage("/weather_tomorrow")
+        mockWebClient.webhookPostReceiveMessage("/weather_tomorrow")
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
             Date: 02 Jul 2018
@@ -89,7 +94,7 @@ class SendWeatherModuleTest {
     }
 
     @Test fun onWeekWeatherCommand_shouldSendWeekWeather() {
-        ModuleTestUtil(webClient).webhookPostReceiveMessage("/weather_week")
+        mockWebClient.webhookPostReceiveMessage("/weather_week")
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
             Link: https://weather.yahoo.com/country/state/city-2347539

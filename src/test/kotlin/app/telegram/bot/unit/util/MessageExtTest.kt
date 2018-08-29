@@ -1,25 +1,22 @@
 package app.telegram.bot.unit.util
 
-import app.telegram.bot.data.Post
-import app.telegram.bot.data.Weather
+import app.telegram.bot.data.model.MessageText
+import app.telegram.bot.data.model.Post
+import app.telegram.bot.data.model.Weather
 import app.telegram.bot.util.toMessage
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class MessageExtTest {
 
-    @Rule @JvmField val expectedExceptionRule = ExpectedException.none()!!
-
     @Test fun toMessage_shouldReturnPreparedMessageWithCurrentWeather() {
         val weather = getCurrentWeatherModel()
         val message = weather.toMessage()
         checkOnNullAndBlank(message)
-        val except = validCurrentWeather()
+        val except = validCurrentWeatherText()
         assertThat(message).isEqualTo(except)
     }
 
@@ -27,72 +24,60 @@ class MessageExtTest {
         val weather = getDayForecastWeatherModel()
         val message = weather.toMessage()
         checkOnNullAndBlank(message)
-        val except = validDayForecastWeather()
+        val except = validDayForecastWeatherText()
         assertThat(message).isEqualTo(except)
-    }
-
-    @Test fun toMessageIfIncorrectArgument_shouldThrowException() {
-        val list = listOf("It's", "array", "of", "string")
-        expectedExceptionRule.expect(IllegalArgumentException::class.java)
-        expectedExceptionRule.expectMessage("It isn't valid objects for transform to message (String)")
-        list.toMessage()
     }
 
     @Test fun toMessage_shouldReturnPreparedMessageWeekForecast() {
         val weather = getWeekForecastModel()
         val message = weather.toMessage()
         checkOnNullAndBlank(message)
-        val except = validWeekWeather()
+        val except = validWeekWeatherText()
         assertThat(message).isEqualTo(except)
     }
 
-    @Test fun toMessageIfDescriptionEmpty_shouldReturnValidPostWithoutDescription() {
+    @Test fun toMessage_shouldReturnValidPost() {
         val post = Post(
                 title = "Rust, дисциплинирующий язык программирования",
                 link = "https://habr.com/company/piter/blog/267203/"
         )
         val message = post.toMessage()
         checkOnNullAndBlank(message)
-        val expect = validPostWithoutDescription()
+        val expect = validPostMessageText()
         assertThat(message).isEqualTo(expect)
     }
 
-    @Test fun toMessageIfDescriptionNotEmpty_shouldReturnValidPostWithoutDescription() {
-        val post = Post(
-                title = "Java and SpringBoot",
-                link = "https://habr.com/company/piter/blog/25002/",
-                description = "Java is more effective with SpringBoot framework, try it now"
-        )
-        val message = post.toMessage()
-        checkOnNullAndBlank(message)
-        val expect = validPostWithDescription()
-        assertThat(message).isEqualTo(expect)
-    }
-
-    @Test
-    fun toMessage_shouldReturnPreparedMessagePosts() {
+    @Test fun toMessage_shouldReturnPreparedMessagePosts() {
         val posts = getPostsListModel()
         val message = posts.toMessage()
         checkOnNullAndBlank(message)
-        val except = validPosts()
+        val except = validPostsMessageText()
         assertThat(message).isEqualTo(except)
     }
 
-
-    private fun validPostWithoutDescription(): String {
-        return """
-                Rust, дисциплинирующий язык программирования >>> <a href="https://habr.com/company/piter/blog/267203/">Link</a>
-            """.trimIndent()
+    @Test fun toMessage_onList_shouldReturnPreparedText() {
+        val objects = listOf(
+                object : MessageText { override fun toMessage(): String  = "Hello world" },
+                object : MessageText { override fun toMessage(): String  = "What's up" },
+                object : MessageText { override fun toMessage(): String  = "How are you" }
+        )
+        val expected = validObjectsMessageText()
+        val message = objects.toMessage()
+        assertThat(message).isEqualTo(expected)
     }
 
-    private fun validPostWithDescription(): String {
-        return """
-                Java and SpringBoot >>> <a href="https://habr.com/company/piter/blog/25002/">Link</a>
-                Java is more effective with SpringBoot framework, try it now
-            """.trimIndent()
-    }
+    private fun validPostMessageText(): String = "> https://habr.com/company/piter/blog/267203/"
 
-    private fun validCurrentWeather(): String {
+    private fun validObjectsMessageText(): String =
+        """
+            Hello world
+
+            What's up
+
+            How are you
+        """.trimIndent()
+
+    private fun validCurrentWeatherText(): String {
         return """
                 Location: Ivano-Frankivsk Oblast, Ukraine(UA)
                 Time: Sun, 01 Jul 2018 01:00 AM EEST
@@ -102,7 +87,7 @@ class MessageExtTest {
             """.trimIndent()
     }
 
-    private fun validDayForecastWeather(): String {
+    private fun validDayForecastWeatherText(): String {
         return """
                 Location: Tokyo, Japan(Tokyo Prefecture)
                 Date: 01 Jul 2018
@@ -114,7 +99,7 @@ class MessageExtTest {
             """.trimIndent()
     }
 
-    private fun validWeekWeather(): String {
+    private fun validWeekWeatherText(): String {
         return """
                 Location: Ivano-Frankivsk Oblast, Ukraine(UA)
                 Link: https://weather.yahoo.com/country/state/city-2347539
@@ -163,12 +148,15 @@ class MessageExtTest {
             """.trimIndent()
     }
 
-    private fun validPosts(): String = """
-        Hello world(java) >>> <a href="https://habr.com/company/piter/blog/10002/">Link</a>
+    private fun validPostsMessageText(): String = """
+        Hello world(java)
+        > https://habr.com/company/piter/blog/10002/
 
-        Hello world(kotlin) >>> <a href="https://habr.com/company/piter/blog/267203/">Link</a>
+        Hello world(kotlin)
+        > https://habr.com/company/piter/blog/267203/
 
-        Hello world(scala) >>> <a href="https://habr.com/company/piter/blog/2321345/">Link</a>
+        Hello world(scala)
+        > https://habr.com/company/piter/blog/2321345/
     """.trimIndent()
 
     private fun getCurrentWeatherModel() = Weather(

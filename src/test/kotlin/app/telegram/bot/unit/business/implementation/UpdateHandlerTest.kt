@@ -3,10 +3,11 @@ package app.telegram.bot.unit.business.implementation
 import app.telegram.bot.business.implementation.UpdateHandlerImpl
 import app.telegram.bot.business.inheritence.BotInteractor
 import app.telegram.bot.business.inheritence.UpdateHandler
-import com.pengrad.telegrambot.model.Chat
+import app.telegram.bot.data.model.ChatUser
+import app.telegram.bot.data.model.CurrentUser
+import app.telegram.bot.mock
 import com.pengrad.telegrambot.model.Message
 import com.pengrad.telegrambot.model.Update
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,40 +21,62 @@ class UpdateHandlerTest {
     @Mock lateinit var botInteractor: BotInteractor
     lateinit var updateHandler: UpdateHandler
     private val chatId: Long = 27455958981
+    private val currentUser = CurrentUser()
 
     @Before fun before() {
         MockitoAnnotations.initMocks(this)
-        updateHandler = UpdateHandlerImpl(botInteractor)
+        currentUser.update(ChatUser(chatId, "Alex"))
+        updateHandler = UpdateHandlerImpl(currentUser, botInteractor)
     }
 
     @Test fun onStartQuery_shouldCalledCorrectMethod() {
         val update = mockUpdate("/start")
         updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendHello(chatId)
+        verify(botInteractor, times(1)).sendHello()
     }
 
     @Test fun onCurrentWeatherQuery_shouldCalledCorrectMethod() {
         val update = mockUpdate("/weather_current")
         updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendCurrentWeather(chatId)
+        verify(botInteractor, times(1)).sendCurrentWeather()
     }
 
     @Test fun onTodayWeatherQuery_shouldCalledCorrectMethod() {
         val update = mockUpdate("/weather_today")
         updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendTodayWeather(chatId)
+        verify(botInteractor, times(1)).sendTodayWeather()
     }
 
     @Test fun onTomorrowWeatherQuery_shouldCalledCorrectMethod() {
         val update = mockUpdate("/weather_tomorrow")
         updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendTomorrowWeather(chatId)
+        verify(botInteractor, times(1)).sendTomorrowWeather()
     }
 
     @Test fun onWeekWeatherQuery_shouldCalledCorrectMethod() {
         val update = mockUpdate("/weather_week")
         updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendWeekWeather(chatId)
+        verify(botInteractor, times(1)).sendWeekWeather()
+    }
+
+    @Test fun onHelpCommand_shouldCalledCorrectMethod() {
+        var update = mockUpdate("/help")
+        updateHandler.onUpdateReceive(update)
+        verify(botInteractor, times(1)).sendHelp()
+
+        update = mockUpdate("-h")
+        updateHandler.onUpdateReceive(update)
+        verify(botInteractor, times(2)).sendHelp()
+
+        update = mockUpdate("--help")
+        updateHandler.onUpdateReceive(update)
+        verify(botInteractor, times(3)).sendHelp()
+    }
+
+    @Test fun onStartCommand_shouldCalledCorrectMethod() {
+        val update = mockUpdate("/start")
+        updateHandler.onUpdateReceive(update)
+        verify(botInteractor, times(1)).sendHello()
     }
 
     private fun mockUpdate(text: String) : Update {
@@ -62,9 +85,8 @@ class UpdateHandlerTest {
         `when`(message.text()).thenReturn(text)
         `when`(message.chat()).thenReturn(mock())
         `when`(message.chat().id()).thenReturn(chatId)
+        `when`(message.chat().username()).thenReturn("Alex")
         `when`(update.message()).thenReturn(message)
         return update
     }
-
-    inline fun <reified T : Any> mock() = mock(T::class.java)
 }

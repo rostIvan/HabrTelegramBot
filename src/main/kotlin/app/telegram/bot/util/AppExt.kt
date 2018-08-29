@@ -1,14 +1,12 @@
 package app.telegram.bot.util
 
 import java.util.*
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 fun ClosedRange<Int>.random() = Random().nextInt((endInclusive + 1) - start) +  start
-fun IntRange.intStream() = this.toList().stream()
-fun <T> Stream<T>.collectAsList(): List<T> = this.collect(Collectors.toList())
+fun <T> List<T>.random() = this[(0 until this.size).random()]
+fun String.containsIgnoreCase(string: String) = this.contains(string, ignoreCase = true)
 
-fun getStartMessage() = "Hello, let's start!"
+fun getStartMessage(nickname: String) = "Hello, $nickname, let's start! Use /help command for get start"
 
 fun getHelpMessage() = """
     Commands:

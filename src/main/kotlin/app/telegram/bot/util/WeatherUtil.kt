@@ -1,7 +1,7 @@
 package app.telegram.bot.util
 
-import app.telegram.bot.api.yahoo.WeatherJsonWrapper
-import app.telegram.bot.data.Weather
+import app.telegram.bot.data.api.yahoo.WeatherJsonWrapper
+import app.telegram.bot.data.model.Weather
 import kotlin.math.roundToInt
 
 object WeatherUtil {

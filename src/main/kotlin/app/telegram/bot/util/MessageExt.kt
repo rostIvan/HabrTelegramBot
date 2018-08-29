@@ -1,26 +1,20 @@
 package app.telegram.bot.util
 
-import app.telegram.bot.data.Post
-import app.telegram.bot.data.Weather
+import app.telegram.bot.data.model.MessageText
+import app.telegram.bot.data.model.Post
+import app.telegram.bot.data.model.Weather
+import java.util.stream.Collector
 import java.util.stream.Collectors
 
-fun Weather.toMessage(): String = this.let {
-    if (day.isBlank() && temperatureMin == temperatureMax)
-        formatCurrentDayWeather(it)
-    else
-        formatForecastDayWeather(it)
-}
-
-fun Post.toMessage(): String = with(this) { "$title >>> <a href=\"$link\">Link</a>" + if (description.isBlank()) "" else "\n$description" }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T> List<T>.toMessage(): String = when (T::class) {
-    Weather::class -> formatWeekWeatherForecast(this as List<Weather>)
+inline fun <reified T : MessageText> List<T>.toMessage() = when(T::class) {
+    Weather::class -> formatWeatherForecast(this as List<Weather>)
     Post::class -> formatPosts(this as List<Post>)
-    else -> throw IllegalArgumentException("It isn't valid objects for transform to message (${T::class.java.simpleName})")
+    else -> this.collectWithNewLine { it.toMessage() }
 }
 
-private fun formatCurrentDayWeather(weather: Weather): String = with(weather) {
+fun formatCurrentDayWeather(weather: Weather): String = with(weather) {
     """
         Location: $location
         Time: $date
@@ -30,7 +24,7 @@ private fun formatCurrentDayWeather(weather: Weather): String = with(weather) {
     """.trimIndent()
 }
 
-private fun formatForecastDayWeather(weather: Weather): String = with(weather) {
+fun formatForecastDayWeather(weather: Weather): String = with(weather) {
     """
         Location: $location
         Date: $date
@@ -42,25 +36,29 @@ private fun formatForecastDayWeather(weather: Weather): String = with(weather) {
     """.trimIndent()
 }
 
-fun formatWeekWeatherForecast(list: List<Weather>): String {
+fun formatWeatherForecast(list: List<Weather>): String {
     val location = list[0].location
     val link = list[0].link
-    val forecast = list.stream().map {
-        with(it) {
-            """
-                Date: $date
-                Day: $day
-                Condition: $condition
-                Temperature(min): $temperatureMin C°
-                Temperature(max): $temperatureMax C°
-            """.trimIndent()
-        }
-    }.collect(newLineJoin())
+    val forecast = list.collectWithNewLine { formatForecastItem(it) }
     return "Location: $location\n" +
             "Link: $link\n\n" +
             forecast
 }
 
-fun formatPosts(list: List<Post>): String = list.stream().map { it.toMessage() }.collect(newLineJoin())
+private fun formatForecastItem(weather: Weather): String {
+    return with(weather) {
+        """
+                Date: $date
+                Day: $day
+                Condition: $condition
+                Temperature(min): $temperatureMin C°
+                Temperature(max): $temperatureMax C°
+        """.trimIndent()
+    }
+}
 
-private fun newLineJoin() = Collectors.joining("\n\n")
+fun formatPost(post: Post): String = with(post) { "> $link" }
+fun formatPosts(list: List<Post>): String = list.collectWithNewLine { with(it) { "$title\n> $link" } }
+
+fun newLineJoin(): Collector<CharSequence, *, String> = Collectors.joining("\n\n")
+fun <T> List<T>.collectWithNewLine(mapTo: (T) -> String): String = this.stream().map { mapTo(it) }.collect(newLineJoin())

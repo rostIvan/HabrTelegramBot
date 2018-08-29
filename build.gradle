@@ -48,16 +48,18 @@ repositories {
 ext {
     bot_api_version = "3.6.0"
     jackson_version = "2.9.4.1"
+    hibernate_version = "5.2.15.Final"
+    mysql_connector_version = "6.0.6"
     jsoup_version = "1.11.3"
-    selenium_version = "3.0.1"
     rx_version = "2.1.16"
     retrofit_version = "2.4.0"
     rx_adapter_version = "1.0.0"
     gson_adapter_version = "2.1.0"
-    mockito_version = "2.19.0"
 
+    mockito_version = "2.19.0"
     junit_version = "4.12"
     asserj_version = "3.10.0"
+    selenium_version = "3.0.1"
 }
 
 dependencies {
@@ -71,6 +73,9 @@ dependencies {
     compile("io.reactivex.rxjava2:rxjava:$rx_version")
     compile("com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$rx_adapter_version")
     compile("org.jsoup:jsoup:$jsoup_version")
+    compile("org.hibernate:hibernate-core:$hibernate_version")
+    compile("mysql:mysql-connector-java:$mysql_connector_version")
+
     compile("org.seleniumhq.selenium:selenium-server:$selenium_version")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')

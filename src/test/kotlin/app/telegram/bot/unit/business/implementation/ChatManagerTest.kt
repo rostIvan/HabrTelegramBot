@@ -29,10 +29,12 @@ class ChatManagerTest {
         verify(telegramBot, times(1)).execute(any(SendMessage::class.java))
         chatManager.sendMessage(chatId, "Hi!")
         verify(telegramBot, times(2)).execute(any(SendMessage::class.java))
+    }
 
-        (0..100).forEachIndexed { index, _ ->
-            chatManager.sendMessage(chatId, "Some message $index")
-            verify(telegramBot, times(index + 3)).execute(any(SendMessage::class.java))
-        }
+    @Test fun sendMessageWithPreview_shouldCalledExecutionSendingRequest() {
+        chatManager.sendMessage(chatId, "Hello world!!!", true)
+        verify(telegramBot, times(1)).execute(any(SendMessage::class.java))
+        chatManager.sendMessage(chatId, "Hi!")
+        verify(telegramBot, times(2)).execute(any(SendMessage::class.java))
     }
 }

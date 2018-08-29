@@ -1,9 +1,9 @@
 package app.telegram.bot.integration
 
-import app.telegram.bot.unit.api.yahoo.WeatherApiTest
-import app.telegram.bot.api.yahoo.WeatherApi
-import app.telegram.bot.business.implementation.WeatherProviderImpl
-import app.telegram.bot.business.inheritence.WeatherProvider
+import app.telegram.bot.unit.data.api.yahoo.WeatherApiTest
+import app.telegram.bot.data.api.yahoo.WeatherApi
+import app.telegram.bot.data.service.weather.WeatherServiceImpl
+import app.telegram.bot.data.service.weather.WeatherService
 import app.telegram.bot.util.toMessage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -17,16 +17,16 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner.Silent::class)
 class ProvideWeatherIntegrationTest {
     @Mock lateinit var weatherApi: WeatherApi
-    lateinit var weatherProvider: WeatherProvider
+    lateinit var weatherService: WeatherService
 
     @Before fun before() {
         MockitoAnnotations.initMocks(this)
         mockWeatherApi()
-        weatherProvider = WeatherProviderImpl(weatherApi)
+        weatherService = WeatherServiceImpl(weatherApi)
     }
 
     @Test fun toMessage_shouldReturnFormattedCurrentWeatherMessage() {
-        val weather = weatherProvider.getCurrentWeather().blockingGet()
+        val weather = weatherService.getCurrentWeather().blockingGet()
         val message = weather.toMessage()
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
@@ -39,7 +39,7 @@ class ProvideWeatherIntegrationTest {
     }
 
     @Test fun toMessage_shouldReturnFormattedTodayWeatherMessage() {
-        val weather = weatherProvider.getTodayWeather().blockingGet()
+        val weather = weatherService.getTodayWeather().blockingGet()
         val message = weather.toMessage()
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
@@ -54,7 +54,7 @@ class ProvideWeatherIntegrationTest {
     }
 
     @Test fun toMessage_shouldReturnFormattedTomorrowWeatherMessage() {
-        val weather = weatherProvider.getTomorrowWeather().blockingGet()
+        val weather = weatherService.getTomorrowWeather().blockingGet()
         val message = weather.toMessage()
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
@@ -69,7 +69,7 @@ class ProvideWeatherIntegrationTest {
     }
 
     @Test fun toMessage_shouldReturnFormattedWeekWeatherForecastMessage() {
-        val weather = weatherProvider.getWeekWeather().blockingGet()
+        val weather = weatherService.getWeekWeather().blockingGet()
         val message = weather.toMessage()
         val expect = """
             Location: Ivano-Frankivsk Oblast, Ukraine(UA)
