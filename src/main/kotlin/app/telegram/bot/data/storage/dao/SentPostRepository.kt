@@ -1,55 +1,57 @@
 package app.telegram.bot.data.storage.dao
 
 import app.telegram.bot.data.model.CurrentUser
-import app.telegram.bot.data.model.PostDTO
+import app.telegram.bot.data.storage.hibernate.PostDbModel
+import app.telegram.bot.data.storage.hibernate.User
+import app.telegram.bot.data.storage.hibernate.UserRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
+import javax.transaction.Transactional
 
 @Repository
-class SentPostRepository(private val user: CurrentUser) : DaoStorage<PostDTO> {
+class SentPostRepository(private val currentUser: CurrentUser) : DaoStorage<PostDbModel> {
 
-    override fun findFirst(): PostDTO {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    @Autowired private lateinit var userRepository: UserRepository
+
+    override fun findFirst(): PostDbModel = receivedPosts().first()
+    override fun findLast(): PostDbModel  = receivedPosts().last()
+    override fun findAll(): List<PostDbModel> = receivedPosts()
+
+    @Transactional
+    override fun save(t: PostDbModel) {
+        receivedPosts().add(t)
     }
 
-    override fun findLast(): PostDTO {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    @Transactional
+    override fun delete(t: PostDbModel) {
+        receivedPosts().remove(t)
     }
 
-    override fun findAll(): List<PostDTO> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    @Transactional
+    override fun saveAll(iterable: Iterable<PostDbModel>) {
+        receivedPosts().addAll(iterable)
     }
 
-    override fun save(t: PostDTO) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    @Transactional
+    override fun deleteAll(iterable: Iterable<PostDbModel>) {
+        receivedPosts().removeAll(iterable)
     }
 
-    override fun delete(t: PostDTO) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun saveAll(iterable: Iterable<PostDTO>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun deleteAll(iterable: Iterable<PostDTO>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
+    @Transactional
     override fun deleteAll() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        receivedPosts().clear()
     }
 
-    override fun count(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun count(): Int = receivedPosts().size
+    override fun isEmpty(): Boolean = receivedPosts().isEmpty()
+    override fun contains(t: PostDbModel): Boolean = receivedPosts().contains(t)
+    override fun containsAll(iterable: Iterable<PostDbModel>): Boolean = receivedPosts().containsAll(iterable.toList())
 
-    override fun isEmpty(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    private fun receivedPosts() = findOrSaveUser().receivedPosts
+    private fun findOrSaveUser() = userRepository
+            .findByChat(id())
+            .orElseGet { userRepository.save(User(chatId = id(), name = name())) }
 
-    override fun contains(t: PostDTO): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun id() = user.chatId()
+    private fun id() = currentUser.chatId()
+    private fun name() = currentUser.nickname()
 }

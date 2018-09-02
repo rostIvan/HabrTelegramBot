@@ -3,6 +3,9 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
+      - image: circleci/mysql:5.7
+        environment:
+          - MYSQL_ROOT_PASSWORD=root
     working_directory: ~/TelegramBot
 
     environment:

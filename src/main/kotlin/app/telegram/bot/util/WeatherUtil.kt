@@ -52,15 +52,14 @@ object WeatherUtil {
                 temperatureMin = fahrenheitToCelsius(forecastDay.temperatureMin),
                 temperatureMax = fahrenheitToCelsius(forecastDay.temperatureMax))
     }
+    private fun WeatherJsonWrapper.Location.formatLocation() =
+            "${city.trim()}, ${country.trim()}(${region.trim()})"
+
+    // link example: http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2347539
+    private fun String.formatLink(): String = this
+            .replaceBeforeLast("/*", "")
+            .removePrefix("/*")
+            .removeSuffix("/")
+
+    private fun fahrenheitToCelsius(fahrenheit: Int) = ((5.0 / 9.0) * (fahrenheit - 32.0)).roundToInt()
 }
-
-private fun WeatherJsonWrapper.Location.formatLocation() =
-        "${city.trim()}, ${country.trim()}(${region.trim()})"
-
-// link example: http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2347539
-private fun String.formatLink(): String = this
-        .replaceBeforeLast("/*", "")
-        .removePrefix("/*")
-        .removeSuffix("/")
-
-private fun fahrenheitToCelsius(fahrenheit: Int) = ((5.0 / 9.0) * (fahrenheit - 32.0)).roundToInt()

@@ -3,9 +3,13 @@ package app.telegram.bot.util
 import app.telegram.bot.data.model.MessageText
 import app.telegram.bot.data.model.Post
 import app.telegram.bot.data.model.Weather
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import java.util.stream.Collector
 import java.util.stream.Collectors
 
+fun extractQuery(matcher: Matcher) = matcher.group(1).toString()
+fun extractCount(matcher: Matcher) = matcher.group(1).toInt()
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : MessageText> List<T>.toMessage() = when(T::class) {

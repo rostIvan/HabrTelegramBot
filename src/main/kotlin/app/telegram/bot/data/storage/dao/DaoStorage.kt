@@ -15,4 +15,5 @@ interface DaoStorage<T> {
     fun count() : Int
     fun isEmpty(): Boolean
     fun contains(t: T): Boolean
+    fun containsAll(iterable: Iterable<T>): Boolean
 }

@@ -10,20 +10,14 @@ import app.telegram.bot.data.api.habr.HabrSiteParser
 import app.telegram.bot.data.api.habr.PostApi
 import app.telegram.bot.data.api.yahoo.WeatherApi
 import app.telegram.bot.data.model.CurrentUser
-import app.telegram.bot.data.model.PostDTO
 import app.telegram.bot.data.service.post.PostService
-import app.telegram.bot.data.service.post.PostServiceImpl
 import app.telegram.bot.data.service.weather.WeatherService
-import app.telegram.bot.data.service.weather.WeatherServiceImpl
-import app.telegram.bot.data.storage.dao.DaoStorage
-import app.telegram.bot.data.storage.dao.SentPostRepository
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import app.telegram.bot.util.retrofit
+import app.telegram.bot.util.create
 import com.pengrad.telegrambot.TelegramBot
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Configuration
 class Config {
@@ -41,12 +35,6 @@ class Config {
 
     @Bean fun chatManager(bot: TelegramBot) = ChatManagerImpl(bot)
 
-    @Bean fun weatherApi(): WeatherApi = retrofit(WeatherApi.baseUrl).create(WeatherApi::class.java)
     @Bean fun postApi(): PostApi = HabrApi(HabrSiteParser())
-
-    private fun retrofit(baseUrl: String) = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build()
+    @Bean fun weatherApi(): WeatherApi = retrofit(WeatherApi.baseUrl).create(WeatherApi::class)
 }

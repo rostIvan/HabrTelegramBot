@@ -1,10 +1,22 @@
 package app.telegram.bot.util
 
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
+import kotlin.reflect.KClass
+
+fun retrofit(baseUrl: String): Retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .build()
+
+fun <T : Any> Retrofit.create(clazz: KClass<T>): T = this.create(clazz.java)
 
 fun ClosedRange<Int>.random() = Random().nextInt((endInclusive + 1) - start) +  start
 fun <T> List<T>.random() = this[(0 until this.size).random()]
-fun String.containsIgnoreCase(string: String) = this.contains(string, ignoreCase = true)
+//fun String.containsIgnoreCase(string: String) = this.contains(string, ignoreCase = true)
 
 fun getStartMessage(nickname: String) = "Hello, $nickname, let's start! Use /help command for get start"
 
@@ -25,6 +37,7 @@ fun getHelpMessage() = """
     Phrases:
 
     Send me ["query"] post -> Send me "Android" post
+    Send me ["query"] post -> Send me "Android" posts
     Send me [number] posts -> Send me 10 posts
     Send me [number] ["query"] posts -> Send me 3 "Android" posts
 """.trimIndent()

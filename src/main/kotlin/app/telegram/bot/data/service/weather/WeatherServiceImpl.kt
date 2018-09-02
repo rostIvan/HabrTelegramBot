@@ -3,7 +3,9 @@ package app.telegram.bot.data.service.weather
 import app.telegram.bot.data.api.yahoo.WeatherApi
 import app.telegram.bot.data.api.yahoo.WeatherApi.Companion.defaultLocation
 import app.telegram.bot.data.api.yahoo.WeatherJsonWrapper
+import app.telegram.bot.data.model.CurrentUser
 import app.telegram.bot.data.model.Weather
+import app.telegram.bot.data.storage.hibernate.UserRepository
 import app.telegram.bot.util.WeatherUtil.toCurrentWeather
 import app.telegram.bot.util.WeatherUtil.toTodayWeather
 import app.telegram.bot.util.WeatherUtil.toTomorrowWeather

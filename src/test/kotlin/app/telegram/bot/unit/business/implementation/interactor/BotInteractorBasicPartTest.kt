@@ -50,6 +50,7 @@ class BotInteractorBasicPartTest {
         Phrases:
 
         Send me ["query"] post -> Send me "Android" post
+        Send me ["query"] post -> Send me "Android" posts
         Send me [number] posts -> Send me 10 posts
         Send me [number] ["query"] posts -> Send me 3 "Android" posts
         """.trimIndent())
