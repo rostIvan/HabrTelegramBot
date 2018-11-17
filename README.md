@@ -22,3 +22,15 @@ Phrases:
     Send me ["query"] post -> Send me "Android" posts
     Send me [number] posts -> Send me 10 posts
     Send me [number] ["query"] posts -> Send me 3 "Android" posts
+
+## View
+
+<table align="left" width="100%">
+  <tbody>
+    <tr>
+        <td> <img src="./screenshots/1.jpg" alt="drawing"/> </td>
+        <td> <img src="./screenshots/2.jpg" alt="drawing"/> </td>
+        <td> <img src="./screenshots/3.jpg" alt="drawing"/> </td>
+    </tr>
+  </tbody>
+</table>
