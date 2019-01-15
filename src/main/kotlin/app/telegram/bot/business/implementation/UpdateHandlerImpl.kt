@@ -29,10 +29,6 @@ class UpdateHandlerImpl(private val currentUser: CurrentUser,
         when (text) {
             "/start" -> botInteractor.sendHello()
             in listOf("/help", "--help", "-h") -> botInteractor.sendHelp()
-            "/weather_current" -> botInteractor.sendCurrentWeather()
-            "/weather_today" -> botInteractor.sendTodayWeather()
-            "/weather_tomorrow" -> botInteractor.sendTomorrowWeather()
-            "/weather_week" -> botInteractor.sendWeekWeather()
             "/post_random" -> botInteractor.sendRandomPost()
             "/posts_random" -> botInteractor.sendRandomPosts()
 //            "/post_relevant" -> {  }

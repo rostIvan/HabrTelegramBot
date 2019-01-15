@@ -31,7 +31,7 @@ class BotInteractorPostPartTest {
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         user = ChatUser(10059130L, "John")
         currentUser.update(user)
-        botInteractor = BotInteractorImpl(currentUser, chatManager, mock(), postService)
+        botInteractor = BotInteractorImpl(currentUser, chatManager, postService)
     }
 
     @Test fun getRandomPost_ifSuccess_shouldSendCorrectMessage() {

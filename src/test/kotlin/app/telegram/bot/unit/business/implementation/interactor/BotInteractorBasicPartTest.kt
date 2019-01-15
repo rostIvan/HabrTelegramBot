@@ -23,7 +23,7 @@ class BotInteractorBasicPartTest {
     @Before fun setUp() {
         user = ChatUser(1L, "John")
         currentUser.update(user)
-        botInteractor = BotInteractorImpl(currentUser, chatManager, mock(), mock())
+        botInteractor = BotInteractorImpl(currentUser, chatManager, mock())
     }
 
     @Test fun sendHello_shouldCallChatManagerMethod() {
@@ -38,10 +38,6 @@ class BotInteractorBasicPartTest {
 
         /start -> Send hello message
         /help -> Send this message
-        /weather_current -> Send current weather in the selected region
-        /weather_today -> Send today weather in the selected region
-        /weather_tomorrow -> Send tomorrow weather in the selected region
-        /weather_week -> Send week weather in the selected region
         /post_random -> Send random post from the top on post api site
         /posts_random -> Send random posts from the top on post api site
         /post_relevant -> Send relevant post from site api

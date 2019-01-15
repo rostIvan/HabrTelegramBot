@@ -35,30 +35,6 @@ class UpdateHandlerTest {
         verify(botInteractor, times(1)).sendHello()
     }
 
-    @Test fun onCurrentWeatherQuery_shouldCalledCorrectMethod() {
-        val update = mockUpdate("/weather_current")
-        updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendCurrentWeather()
-    }
-
-    @Test fun onTodayWeatherQuery_shouldCalledCorrectMethod() {
-        val update = mockUpdate("/weather_today")
-        updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendTodayWeather()
-    }
-
-    @Test fun onTomorrowWeatherQuery_shouldCalledCorrectMethod() {
-        val update = mockUpdate("/weather_tomorrow")
-        updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendTomorrowWeather()
-    }
-
-    @Test fun onWeekWeatherQuery_shouldCalledCorrectMethod() {
-        val update = mockUpdate("/weather_week")
-        updateHandler.onUpdateReceive(update)
-        verify(botInteractor, times(1)).sendWeekWeather()
-    }
-
     @Test fun onHelpCommand_shouldCalledCorrectMethod() {
         var update = mockUpdate("/help")
         updateHandler.onUpdateReceive(update)

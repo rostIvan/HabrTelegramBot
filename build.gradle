@@ -60,7 +60,6 @@ ext {
     mockito_version = "2.19.0"
     junit_version = "4.12"
     asserj_version = "3.10.0"
-    selenium_version = "3.0.1"
 }
 
 dependencies {
@@ -79,8 +78,6 @@ dependencies {
     compile("mysql:mysql-connector-java:$mysql_connector_version")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("com.h2database:h2")
-
-    compile("org.seleniumhq.selenium:selenium-server:$selenium_version")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile("org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version")
